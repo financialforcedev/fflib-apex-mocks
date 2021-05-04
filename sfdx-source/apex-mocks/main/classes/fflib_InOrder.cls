@@ -2,21 +2,17 @@
  Copyright (c) 2017 FinancialForce.com, inc.  All rights reserved.
  */
 
-
 /**
  * @group Core
  */
-public with sharing class fflib_InOrder extends fflib_MethodVerifier
-{
+public with sharing class fflib_InOrder extends fflib_MethodVerifier {
 	private final List<Object> unorderedMockInstances;
 	private Integer idxMethodCall = 0;
 
-	private Set<fflib_VerificationMode.ModeName> notImplementedMethods =
-		new Set<fflib_VerificationMode.ModeName>
-		{
-			fflib_VerificationMode.ModeName.atMost,
-			fflib_VerificationMode.ModeName.between
-		};
+	private Set<fflib_VerificationMode.ModeName> notImplementedMethods = new Set<fflib_VerificationMode.ModeName>{
+		fflib_VerificationMode.ModeName.atMost,
+		fflib_VerificationMode.ModeName.between
+	};
 
 	private final fflib_ApexMocks mocks;
 
@@ -25,8 +21,10 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * @param mocks The apex mock object instance.
 	 * @param unorderedMockInstances One or more mock implementation classes (listed in any order), whose ordered method calls require verification.
 	 */
-	public fflib_InOrder(fflib_ApexMocks mocks, List<Object> unorderedMockInstances)
-	{
+	public fflib_InOrder(
+		fflib_ApexMocks mocks,
+		List<Object> unorderedMockInstances
+	) {
 		this.unorderedMockInstances = unorderedMockInstances;
 		this.mocks = mocks;
 	}
@@ -40,8 +38,10 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * @param verificationMode Defines the constraints for performing the verification (e.g. the minimum and maximum expected invocation counts).
 	 * @return The mock object instance.
 	 */
-	public Object verify(Object mockInstance, fflib_VerificationMode verificationMode)
-	{
+	public Object verify(
+		Object mockInstance,
+		fflib_VerificationMode verificationMode
+	) {
 		mocks.setOrderedVerifier(this);
 		return mocks.verify(mockInstance, verificationMode);
 	}
@@ -52,8 +52,7 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * @param mockInstance The mock object instance.
 	 * @return The mock object instance.
 	 */
-	public Object verify(Object mockInstance)
-	{
+	public Object verify(Object mockInstance) {
 		mocks.setOrderedVerifier(this);
 		return mocks.verify(mockInstance);
 	}
@@ -66,8 +65,7 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * @param times The number of times you expect the method to have been called.
 	 * @return The mock object instance.
 	 */
-	public Object verify(Object mockInstance, Integer times)
-	{
+	public Object verify(Object mockInstance, Integer times) {
 		mocks.setOrderedVerifier(this);
 		return mocks.verify(mockInstance, times);
 	}
@@ -76,20 +74,20 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * Verify that after the last successful verified method no more interactions happened on the inOrderMock instance.
 	 * @throws Exception with message to help to identify the last method called.
 	 */
-	public void verifyNoMoreInteractions()
-	{
-		if(idxMethodCall == 0)
-		{
+	public void verifyNoMoreInteractions() {
+		if (idxMethodCall == 0) {
 			verifyNoInteractions();
 		}
 
-		if(hasNextInteraction(unorderedMockInstances, idxMethodCall))
-		{
-			fflib_InvocationOnMock invocation =
-				fflib_MethodCountRecorder.getOrderedMethodCalls().get(idxMethodCall -1);
+		if (hasNextInteraction(unorderedMockInstances, idxMethodCall)) {
+			fflib_InvocationOnMock invocation = fflib_MethodCountRecorder.getOrderedMethodCalls()
+				.get(idxMethodCall - 1);
 
 			throw new fflib_ApexMocks.ApexMocksException(
-				'No more Interactions were expected after the ' + invocation.getMethod() +' method.');
+				'No more Interactions were expected after the ' +
+				invocation.getMethod() +
+				' method.'
+			);
 		}
 	}
 
@@ -97,12 +95,11 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * Verify that no interactions at all happened on the inOrderMock instance.
 	 * @throws Exception with message.
 	 */
-	public void verifyNoInteractions()
-	{
-		if(hasNextInteraction(unorderedMockInstances, 0))
-		{
+	public void verifyNoInteractions() {
+		if (hasNextInteraction(unorderedMockInstances, 0)) {
 			throw new fflib_ApexMocks.ApexMocksException(
-				'No Interactions expected on this InOrder Mock instance!');
+				'No Interactions expected on this InOrder Mock instance!'
+			);
 		}
 	}
 
@@ -117,44 +114,85 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	protected override void verify(
 		fflib_QualifiedMethod qm,
 		fflib_MethodArgValues expectedArguments,
-		fflib_VerificationMode verificationMode)
-	{
+		fflib_VerificationMode verificationMode
+	) {
 		String inOrder = ' in order';
-		List<fflib_IMatcher> matchers = fflib_Match.Matching ? fflib_Match.getAndClearMatchers(expectedArguments.argValues.size()) : null;
+		List<fflib_IMatcher> matchers = fflib_Match.Matching
+			? fflib_Match.getAndClearMatchers(
+					expectedArguments.argValues.size()
+			  )
+			: null;
 		List<fflib_InvocationOnMock> actualInvocations = fflib_MethodCountRecorder.getOrderedMethodCalls();
 		List<fflib_MethodArgValues> actualArguments = new List<fflib_MethodArgValues>();
-		for (fflib_InvocationOnMock invocation : actualInvocations)
-		{
+		for (fflib_InvocationOnMock invocation : actualInvocations) {
 			actualArguments.add(invocation.getMethodArgValues());
 		}
 
-		if( verificationMode.VerifyMin == 0 && verificationMode.VerifyMax == 0)
-		{
-			Integer methodCounts = countInteractions(matchers, qm, expectedArguments);
-			if(methodCounts != 0 )
-				throwException(qm, inOrder, fflib_ApexMocks.NEVER, '', methodCounts, verificationMode.CustomAssertMessage, expectedArguments, matchers, actualArguments);
+		if (
+			verificationMode.VerifyMin == 0 &&
+			verificationMode.VerifyMax == 0
+		) {
+			Integer methodCounts = countInteractions(
+				matchers,
+				qm,
+				expectedArguments
+			);
+			if (methodCounts != 0)
+				throwException(
+					qm,
+					inOrder,
+					fflib_ApexMocks.NEVER,
+					'',
+					methodCounts,
+					verificationMode.CustomAssertMessage,
+					expectedArguments,
+					matchers,
+					actualArguments
+				);
 		}
 
-		Integer i=0;
-		for ( ; i<verificationMode.VerifyMin; i++ )
-		{
-			if(!verifyMethodCalled(matchers, qm, expectedArguments))
-			{
-				throwException(qm, inOrder, verificationMode.VerifyMin, '', i, verificationMode.CustomAssertMessage, expectedArguments, matchers, actualArguments);
+		Integer i = 0;
+		for (; i < verificationMode.VerifyMin; i++) {
+			if (!verifyMethodCalled(matchers, qm, expectedArguments)) {
+				throwException(
+					qm,
+					inOrder,
+					verificationMode.VerifyMin,
+					'',
+					i,
+					verificationMode.CustomAssertMessage,
+					expectedArguments,
+					matchers,
+					actualArguments
+				);
 			}
 		}
 
-		if( verificationMode.VerifyMin == verificationMode.VerifyMax )
-		{
-			if(hasNextInteraction(unorderedMockInstances, idxMethodCall))
-			{
+		if (verificationMode.VerifyMin == verificationMode.VerifyMax) {
+			if (hasNextInteraction(unorderedMockInstances, idxMethodCall)) {
 				fflib_InvocationOnMock nextMethod = getNextMethodCall(false);
 
-				if(nextMethod.getMethod() == qm &&
-					argumentsMatch(nextMethod.getMethodArgValues(), matchers, expectedArguments))
-				{
-					Integer methodCounts = i + countInteractions(matchers, qm, expectedArguments);
-					throwException(qm, inOrder, verificationMode.VerifyMin, '', methodCounts, verificationMode.CustomAssertMessage, expectedArguments, matchers, actualArguments);
+				if (
+					nextMethod.getMethod() == qm &&
+					argumentsMatch(
+						nextMethod.getMethodArgValues(),
+						matchers,
+						expectedArguments
+					)
+				) {
+					Integer methodCounts =
+						i + countInteractions(matchers, qm, expectedArguments);
+					throwException(
+						qm,
+						inOrder,
+						verificationMode.VerifyMin,
+						'',
+						methodCounts,
+						verificationMode.CustomAssertMessage,
+						expectedArguments,
+						matchers,
+						actualArguments
+					);
 				}
 			}
 
@@ -162,9 +200,12 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 		}
 
 		//consuming all the calls in case is the atLeast or atLeastOnce method
-		if(verificationMode.Method == fflib_VerificationMode.ModeName.atLeast
-			|| verificationMode.Method == fflib_VerificationMode.ModeName.atLeastOnce)
-		{
+		if (
+			verificationMode.Method ==
+			fflib_VerificationMode.ModeName.atLeast ||
+			verificationMode.Method ==
+			fflib_VerificationMode.ModeName.atLeastOnce
+		) {
 			consumeInteractions(matchers, qm, expectedArguments);
 		}
 	}
@@ -172,17 +213,20 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	private Boolean verifyMethodCalled(
 		List<fflib_IMatcher> matchers,
 		fflib_QualifiedMethod qm,
-		fflib_MethodArgValues methodArg)
-	{
+		fflib_MethodArgValues methodArg
+	) {
 		fflib_InvocationOnMock calledMethod = getNextMethodCall();
-		while(calledMethod != null)
-		{
-			if(calledMethod.getMethod() == qm &&
-				argumentsMatch(calledMethod.getMethodArgValues(), matchers, methodArg))
-			{
+		while (calledMethod != null) {
+			if (
+				calledMethod.getMethod() == qm &&
+				argumentsMatch(
+					calledMethod.getMethodArgValues(),
+					matchers,
+					methodArg
+				)
+			) {
 				//it's our method
-				if (matchers != null)
-				{
+				if (matchers != null) {
 					capture(matchers);
 				}
 				return true;
@@ -197,19 +241,28 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	private Integer countInteractions(
 		List<fflib_IMatcher> matchers,
 		fflib_QualifiedMethod qualifiedMethod,
-		fflib_MethodArgValues methodArg)
-	{
+		fflib_MethodArgValues methodArg
+	) {
 		Integer interactionsCouter = 0;
 
-		for (Integer i = idxMethodCall, len = fflib_MethodCountRecorder.getOrderedMethodCalls().size(); i<len; i++)
-		{
-			fflib_InvocationOnMock invocation = fflib_MethodCountRecorder.getOrderedMethodCalls().get(i);
-			for (Object mockInstance : unorderedMockInstances)
-			{
-				if (invocation.getMock() === mockInstance
-					&& (qualifiedMethod == invocation.getMethod())
-					&& (argumentsMatch(invocation.getMethodArgValues(), matchers, methodArg)))
-				{
+		for (
+			Integer i = idxMethodCall,
+				len = fflib_MethodCountRecorder.getOrderedMethodCalls().size();
+			i < len;
+			i++
+		) {
+			fflib_InvocationOnMock invocation = fflib_MethodCountRecorder.getOrderedMethodCalls()
+				.get(i);
+			for (Object mockInstance : unorderedMockInstances) {
+				if (
+					invocation.getMock() === mockInstance &&
+					(qualifiedMethod == invocation.getMethod()) &&
+					(argumentsMatch(
+						invocation.getMethodArgValues(),
+						matchers,
+						methodArg
+					))
+				) {
 					interactionsCouter++;
 				}
 			}
@@ -221,24 +274,32 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	private void consumeInteractions(
 		List<fflib_IMatcher> matchers,
 		fflib_QualifiedMethod qualifiedMethod,
-		fflib_MethodArgValues methodArg)
-	{
+		fflib_MethodArgValues methodArg
+	) {
 		Integer lastInteracionIndex = 0;
 
 		//going all through the orderedMethodCalls to find all the interaction of the method
-		for (Integer i = idxMethodCall, len = fflib_MethodCountRecorder.getOrderedMethodCalls().size(); i<len; i++)
-		{
-			fflib_InvocationOnMock invocation = fflib_MethodCountRecorder.getOrderedMethodCalls().get(i);
-			for (Object mockInstance : unorderedMockInstances)
-			{
-				if (invocation.getMock() === mockInstance
-					&& (qualifiedMethod == invocation.getMethod())
-					&& (argumentsMatch(invocation.getMethodArgValues(), matchers, methodArg)))
-				{
+		for (
+			Integer i = idxMethodCall,
+				len = fflib_MethodCountRecorder.getOrderedMethodCalls().size();
+			i < len;
+			i++
+		) {
+			fflib_InvocationOnMock invocation = fflib_MethodCountRecorder.getOrderedMethodCalls()
+				.get(i);
+			for (Object mockInstance : unorderedMockInstances) {
+				if (
+					invocation.getMock() === mockInstance &&
+					(qualifiedMethod == invocation.getMethod()) &&
+					(argumentsMatch(
+						invocation.getMethodArgValues(),
+						matchers,
+						methodArg
+					))
+				) {
 					//it's our method
 					lastInteracionIndex = i;
-					if (matchers != null)
-					{
+					if (matchers != null) {
 						capture(matchers);
 					}
 				}
@@ -252,19 +313,15 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	private Boolean argumentsMatch(
 		fflib_MethodArgValues calledMethodArg,
 		List<fflib_IMatcher> matchers,
-		fflib_MethodArgValues methodArg)
-	{
+		fflib_MethodArgValues methodArg
+	) {
 		//Check it was called with the right args.
-		if (matchers != null)
-		{
-			if(fflib_Match.matchesAllArgs(calledMethodArg, matchers))
-			{
+		if (matchers != null) {
+			if (fflib_Match.matchesAllArgs(calledMethodArg, matchers)) {
 				//Return now we've matched the method call
 				return true;
 			}
-		}
-		else if(calledMethodArg == methodArg)
-		{
+		} else if (calledMethodArg == methodArg) {
 			//Return now we've matched the method call
 			return true;
 		}
@@ -272,27 +329,24 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 		return false;
 	}
 
-	private fflib_InvocationOnMock getNextMethodCall()
-	{
+	private fflib_InvocationOnMock getNextMethodCall() {
 		return getNextMethodCall(true);
 	}
 
-	private fflib_InvocationOnMock getNextMethodCall(Boolean updateIdxMethodCall)
-	{
+	private fflib_InvocationOnMock getNextMethodCall(
+		Boolean updateIdxMethodCall
+	) {
 		Integer idx = 0;
-		for (fflib_InvocationOnMock invocation : fflib_MethodCountRecorder.getOrderedMethodCalls())
-		{
-			if (idx == idxMethodCall)
-			{
-				if(isForMockInstance(invocation))
-				{
-					if(updateIdxMethodCall)
+		for (
+			fflib_InvocationOnMock invocation : fflib_MethodCountRecorder.getOrderedMethodCalls()
+		) {
+			if (idx == idxMethodCall) {
+				if (isForMockInstance(invocation)) {
+					if (updateIdxMethodCall)
 						idxMethodCall++;
 					return invocation;
 				}
-			}
-			else
-			{
+			} else {
 				idx++;
 			}
 		}
@@ -300,12 +354,9 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 		return null;
 	}
 
-	private Boolean isForMockInstance(fflib_InvocationOnMock invocation)
-	{
-		for (Object mi : unorderedMockInstances)
-		{
-			if (mi === invocation.getMock())
-			{
+	private Boolean isForMockInstance(fflib_InvocationOnMock invocation) {
+		for (Object mi : unorderedMockInstances) {
+			if (mi === invocation.getMock()) {
 				return true;
 			}
 		}
@@ -319,17 +370,18 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * @param idxLastMethodCalled The index of the last matched method, used to offset the search for invocations so we don't double count invocations.
 	 * @return Whether or not there were further interactions.
 	 */
-	private Boolean hasNextInteraction(List<Object> mockInstances, Integer idxLastMethodCalled)
-	{
+	private Boolean hasNextInteraction(
+		List<Object> mockInstances,
+		Integer idxLastMethodCalled
+	) {
 		Integer idx = 0;
 
-		for (fflib_InvocationOnMock methodCall : fflib_MethodCountRecorder.getOrderedMethodCalls())
-		{
-			if (isForMockInstance(methodCall))
-			{
+		for (
+			fflib_InvocationOnMock methodCall : fflib_MethodCountRecorder.getOrderedMethodCalls()
+		) {
+			if (isForMockInstance(methodCall)) {
 				idx++;
-				if (idx > idxLastMethodCalled)
-				{
+				if (idx > idxLastMethodCalled) {
 					return true;
 				}
 			}
@@ -345,12 +397,15 @@ public with sharing class fflib_InOrder extends fflib_MethodVerifier
 	 * @param verificationMode The verification mode that have to been verified.
 	 * @throws Exception with message for the fflib_VerificationMode not implemented.
 	 */
-	protected override void validateMode(fflib_VerificationMode verificationMode)
-	{
-		if(notImplementedMethods.contains(verificationMode.Method))
-		{
+	protected override void validateMode(
+		fflib_VerificationMode verificationMode
+	) {
+		if (notImplementedMethods.contains(verificationMode.Method)) {
 			throw new fflib_ApexMocks.ApexMocksException(
-				'The ' + verificationMode.Method.name() + ' method is not implemented for the fflib_InOrder class');
+				'The ' +
+				verificationMode.Method.name() +
+				' method is not implemented for the fflib_InOrder class'
+			);
 		}
 	}
 }

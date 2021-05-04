@@ -6,10 +6,8 @@
  * @nodoc
  */
 @isTest
-public with sharing class fflib_MyList implements IList
-{
-	public interface IList
-	{
+public with sharing class fflib_MyList implements IList {
+	public interface IList {
 		void add(String value);
 		void add(String value1, String value2, String value3, String value4);
 		void addMore(String value);
@@ -21,47 +19,44 @@ public with sharing class fflib_MyList implements IList
 		void set(Integer index, Object value);
 	}
 
-	public void add(String[] value)
-	{
+	public void add(String[] value) {
 	}
 
-	public void add(String value)
-	{
+	public void add(String value) {
 	}
 
-	public void add(String value1, String value2, String value3, String value4)
-	{
+	public void add(
+		String value1,
+		String value2,
+		String value3,
+		String value4
+	) {
 	}
 
-	public void addMore(String value)
-	{
+	public void addMore(String value) {
 	}
 
-	public String get(Integer index)
-	{
+	public String get(Integer index) {
 		return 'fred';
 	}
 
-	public void clear()
-	{
+	public void clear() {
 	}
 
-	public Boolean isEmpty()
-	{
+	public Boolean isEmpty() {
 		return true;
 	}
 
-	public void set(Integer index, Object value)
-	{
+	public void set(Integer index, Object value) {
 	}
 
-	public String get2(Integer index, String value)
-	{
+	public String get2(Integer index, String value) {
 		return 'mary';
 	}
 
-	public static String getStubClassName()
-	{
-		return fflib_ApexMocks.extractTypeName(new fflib_ApexMocks().mock(fflib_MyList.class));
+	public static String getStubClassName() {
+		return fflib_ApexMocks.extractTypeName(
+			new fflib_ApexMocks().mock(fflib_MyList.class)
+		);
 	}
 }

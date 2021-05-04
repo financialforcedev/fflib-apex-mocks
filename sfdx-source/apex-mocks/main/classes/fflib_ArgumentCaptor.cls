@@ -31,8 +31,7 @@
  *	To be consistent with Mockito, the capturer does not perform any checks on the type of the argument.
  * 	@group Core
  */
-public with sharing class fflib_ArgumentCaptor
-{
+public with sharing class fflib_ArgumentCaptor {
 	protected List<Object> argumentsCaptured = new List<Object>();
 
 	/**
@@ -44,8 +43,7 @@ public with sharing class fflib_ArgumentCaptor
 	 * 	@param 	ignoredCaptureType Type (class) of the captured argument
 	 * 	@return A new fflib_ArgumentCaptor.
 	 */
-	public static fflib_ArgumentCaptor forClass(Type ignoredCaptureType)
-	{
+	public static fflib_ArgumentCaptor forClass(Type ignoredCaptureType) {
 		return new fflib_ArgumentCaptor();
 	}
 
@@ -56,8 +54,7 @@ public with sharing class fflib_ArgumentCaptor
 	 *
 	 * 	@return a special matcher that matches any argument and remembers the value.
 	 */
-	public Object capture()
-	{
+	public Object capture() {
 		AnyObject myMatcher = new AnyObject(this);
 
 		return fflib_Match.matches(myMatcher);
@@ -69,16 +66,13 @@ public with sharing class fflib_ArgumentCaptor
 	 *
 	 * 	@return	captured argument value.
 	 */
-	public Object getValue()
-	{
-		if( argumentsCaptured == null ||
-			argumentsCaptured.size() == 0)
-		{
+	public Object getValue() {
+		if (argumentsCaptured == null || argumentsCaptured.size() == 0) {
 			return null;
 		}
 
 		//returns the last argument called
-		return argumentsCaptured.get( argumentsCaptured.size() - 1 );
+		return argumentsCaptured.get(argumentsCaptured.size() - 1);
 	}
 
 	/**
@@ -87,31 +81,26 @@ public with sharing class fflib_ArgumentCaptor
 	 *
 	 * 	@return	Returns all captured values. Use it when capturing multiple arguments on the same call or when the verified method was called multiple times.
 	 */
-	public List<Object> getAllValues()
-	{
+	public List<Object> getAllValues() {
 		return argumentsCaptured;
 	}
 
-	public class AnyObject implements fflib_IMatcher
-	{
+	public class AnyObject implements fflib_IMatcher {
 		private fflib_ArgumentCaptor captor;
 		private Object value;
 
-		public AnyObject(fflib_ArgumentCaptor captor)
-		{
+		public AnyObject(fflib_ArgumentCaptor captor) {
 			this.captor = captor;
 		}
 
 		//match with all the possible values and store the arg value
-		public Boolean matches(Object arg)
-		{
+		public Boolean matches(Object arg) {
 			value = arg;
 			return true;
 		}
 
 		//store the argument in the list ( this would be called inside the method counter where is compared with the matchers of the method)
-		public void storeArgument()
-		{
+		public void storeArgument() {
 			captor.argumentsCaptured.add(value);
 		}
 	}

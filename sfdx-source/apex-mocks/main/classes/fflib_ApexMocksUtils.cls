@@ -23,17 +23,16 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class fflib_ApexMocksUtils
-{
+public class fflib_ApexMocksUtils {
 	/**
 	 * This is taken from https://gist.github.com/afawcett/8dbfc0e1d8c43c982881.
 	 *
 	 * This method works on the principle that serializing and deserialising child records is supported
 	 *
-	 *   System.assertEquals(1, ((List<Master__c>) 
+	 *   System.assertEquals(1, ((List<Master__c>)
 	 *    JSON.deserialize(
 	 *	    JSON.serialize(
-	 *         [select Id, Name, 
+	 *         [select Id, Name,
 	 *            (select Id, Name from Children__r) from Master__c]), List<Master__c>.class))
 	 *               [0].Children__r.size());
 	 *
@@ -64,40 +63,66 @@ public class fflib_ApexMocksUtils
 	 *		        }
 	 * 		]
 	 */
-	public static Object makeRelationship(Type parentsType, List<SObject> parents, SObjectField relationshipField, List<List<SObject>> children) {
-
+	public static Object makeRelationship(
+		Type parentsType,
+		List<SObject> parents,
+		SObjectField relationshipField,
+		List<List<SObject>> children
+	) {
 		// Find out more about this relationship...
-		String relationshipFieldName = relationshipField.getDescribe().getName();
-		DescribeSObjectResult parentDescribe = parents.getSObjectType().getDescribe();
-		return deserializeParentsAndChildren(parentsType, parentDescribe, relationshipField, parents, children);
+		String relationshipFieldName = relationshipField.getDescribe()
+			.getName();
+		DescribeSObjectResult parentDescribe = parents.getSObjectType()
+			.getDescribe();
+		return deserializeParentsAndChildren(
+			parentsType,
+			parentDescribe,
+			relationshipField,
+			parents,
+			children
+		);
 	}
 
 	/**
 	 * Generic overload to makeRelationship. Enables creation of
-	 * relationships in a loosely-coupled manner. 
+	 * relationships in a loosely-coupled manner.
 	 */
 	public static Object makeRelationship(
-			String parentTypeName,
-			String childTypeName,
-			List<SObject> parents,
-			String relationshipFieldName,
-			List<List<SObject>> children) {
-
+		String parentTypeName,
+		String childTypeName,
+		List<SObject> parents,
+		String relationshipFieldName,
+		List<List<SObject>> children
+	) {
 		// Find out more about this relationship...
 		SObjectType parentType = getType(parentTypeName);
-		SObjectField relationshipField = getField(childTypeName, relationshipFieldName);
+		SObjectField relationshipField = getField(
+			childTypeName,
+			relationshipFieldName
+		);
 		DescribeSObjectResult parentDescribe = parentType.getDescribe();
 		Type parentsType = List<SObject>.class;
-		return deserializeParentsAndChildren(parentsType, parentDescribe, relationshipField, parents, children);
+		return deserializeParentsAndChildren(
+			parentsType,
+			parentDescribe,
+			relationshipField,
+			parents,
+			children
+		);
 	}
 
 	/**
 	 * Gives the ability to set test values on formula
 	 * and other read-only fields of mock SObjects
 	 */
-	public static Object setReadOnlyFields(SObject objInstance, Type deserializeType, Map<SObjectField, Object> properties) {
-
-		Map<String, Object> mergedMap = new Map<String, Object>(objInstance.getPopulatedFieldsAsMap());
+	public static Object setReadOnlyFields(
+		SObject objInstance,
+		Type deserializeType,
+		Map<SObjectField, Object> properties
+	) {
+		Map<String, Object> mergedMap = new Map<String, Object>(
+			objInstance.getPopulatedFieldsAsMap()
+		);
 		for (SObjectField field : properties.keySet()) {
 			// Merge the values from the properties map into the fields already set on the object
 			mergedMap.put(field.getDescribe().getName(), properties.get(field));
@@ -105,7 +130,7 @@ public class fflib_ApexMocksUtils
 		// Serialize the merged map, and then deserialize it as the desired object type.
 		String jsonString = JSON.serializePretty(mergedMap);
 		return (SObject) JSON.deserialize(jsonString, deserializeType);
-	} 
+	}
 
 	/**
 	 * Helper Methods
@@ -120,8 +145,8 @@ public class fflib_ApexMocksUtils
 		List<Schema.ChildRelationship> childRelationships = parentDescribe.getChildRelationships();
 
 		String relationshipName = null;
-		for(Schema.ChildRelationship childRelationship : childRelationships) {
-			if(childRelationship.getField() == relationshipField) {
+		for (Schema.ChildRelationship childRelationship : childRelationships) {
+			if (childRelationship.getField() == relationshipField) {
 				relationshipName = childRelationship.getRelationshipName();
 				break;
 			}
@@ -130,8 +155,16 @@ public class fflib_ApexMocksUtils
 		// Stream the parsed JSON representation of the parent objects back out, injecting children as it goes
 		JSONParser parentsParser = JSON.createParser(JSON.serialize(parents));
 		JSONParser childrenParser = JSON.createParser(JSON.serialize(children));
-		JSONGenerator combinedOutput = JSON.createGenerator(false);		
-		streamTokens(parentsParser, combinedOutput, new InjectChildrenEventHandler(childrenParser, relationshipName, children) );
+		JSONGenerator combinedOutput = JSON.createGenerator(false);
+		streamTokens(
+			parentsParser,
+			combinedOutput,
+			new InjectChildrenEventHandler(
+				childrenParser,
+				relationshipName,
+				children
+			)
+		);
 
 		// Derserialise back into SObject list complete with children
 		return JSON.deserialize(combinedOutput.getAsString(), parentsType);
@@ -141,27 +174,37 @@ public class fflib_ApexMocksUtils
 	 * Monitors stream events for end of object for each SObject contained in the parent list
 	 *   then injects the respective childs record list into the stream
 	 */
-	private class InjectChildrenEventHandler implements JSONParserEvents
-	{
+	private class InjectChildrenEventHandler implements JSONParserEvents {
 		private JSONParser childrenParser;
 		private String relationshipName;
 		private List<List<SObject>> children;
 		private Integer childListIdx = 0;
 
-		public InjectChildrenEventHandler(JSONParser childrenParser, String relationshipName, List<List<SObject>> children) {
+		public InjectChildrenEventHandler(
+			JSONParser childrenParser,
+			String relationshipName,
+			List<List<SObject>> children
+		) {
 			this.childrenParser = childrenParser;
 			this.relationshipName = relationshipName;
 			this.children = children;
 			this.childrenParser.nextToken(); // Consume the outer array token
 		}
 
-		public void nextToken(JSONParser fromStream, Integer depth, JSONGenerator toStream) {
+		public void nextToken(
+			JSONParser fromStream,
+			Integer depth,
+			JSONGenerator toStream
+		) {
 			// Inject children?
 			JSONToken currentToken = fromStream.getCurrentToken();
-			if(depth == 2 && currentToken == JSONToken.END_OBJECT ) {
+			if (depth == 2 && currentToken == JSONToken.END_OBJECT) {
 				toStream.writeFieldName(relationshipName);
 				toStream.writeStartObject();
-				toStream.writeNumberField('totalSize', children[childListIdx].size());
+				toStream.writeNumberField(
+					'totalSize',
+					children[childListIdx].size()
+				);
 				toStream.writeBooleanField('done', true);
 				toStream.writeFieldName('records');
 				streamTokens(childrenParser, toStream, null);
@@ -174,42 +217,43 @@ public class fflib_ApexMocksUtils
 	/**
 	 * Utility function to stream tokens from a reader to a write, while providing a basic eventing model
 	 */
-	private static void streamTokens(JSONParser fromStream, JSONGenerator toStream, JSONParserEvents events)
-	{
+	private static void streamTokens(
+		JSONParser fromStream,
+		JSONGenerator toStream,
+		JSONParserEvents events
+	) {
 		Integer depth = 0;
-		while (fromStream.nextToken()!=null)
-		{
+		while (fromStream.nextToken() != null) {
 			// Give event handler chance to inject
-			if(events!=null)
+			if (events != null)
 				events.nextToken(fromStream, depth, toStream);
 			// Forward to output stream
 			JSONToken currentToken = fromStream.getCurrentToken();
-			if(currentToken == JSONToken.START_ARRAY) {
+			if (currentToken == JSONToken.START_ARRAY) {
 				toStream.writeStartArray();
 				depth++;
-			}
-			else if(currentToken == JSONToken.START_OBJECT) {
+			} else if (currentToken == JSONToken.START_OBJECT) {
 				toStream.writeStartObject();
 				depth++;
-			}
-			else if(currentToken == JSONToken.FIELD_NAME)
+			} else if (currentToken == JSONToken.FIELD_NAME)
 				toStream.writeFieldName(fromStream.getCurrentName());
-			else if(currentToken == JSONToken.VALUE_STRING ||
-					currentToken == JSONToken.VALUE_FALSE ||
-					currentToken == JSONToken.VALUE_TRUE ||
-					currentToken == JSONToken.VALUE_NUMBER_FLOAT ||
-					currentToken == JSONToken.VALUE_NUMBER_INT)
+			else if (
+				currentToken == JSONToken.VALUE_STRING ||
+				currentToken == JSONToken.VALUE_FALSE ||
+				currentToken == JSONToken.VALUE_TRUE ||
+				currentToken == JSONToken.VALUE_NUMBER_FLOAT ||
+				currentToken == JSONToken.VALUE_NUMBER_INT
+			)
 				toStream.writeString(fromStream.getText());
-			else if(currentToken == JSONToken.END_OBJECT) {
+			else if (currentToken == JSONToken.END_OBJECT) {
 				toStream.writeEndObject();
 				depth--;
-			}
-			else if(currentToken == JSONToken.END_ARRAY) {
+			} else if (currentToken == JSONToken.END_ARRAY) {
 				toStream.writeEndArray();
 				depth--;
 			}
 			// Don't continue to stream beyond the initial starting point
-			if(depth==0) 
+			if (depth == 0)
 				break;
 		}
 	}
@@ -217,9 +261,12 @@ public class fflib_ApexMocksUtils
 	/**
 	 * Basic event used during the above streaming
 	 */
-	private interface JSONParserEvents
-	{
-		void nextToken(JSONParser fromStream, Integer depth, JSONGenerator toStream);
+	private interface JSONParserEvents {
+		void nextToken(
+			JSONParser fromStream,
+			Integer depth,
+			JSONGenerator toStream
+		);
 	}
 
 	/**
@@ -229,7 +276,9 @@ public class fflib_ApexMocksUtils
 		Map<String, Schema.SObjectType> gd = Schema.getGlobalDescribe();
 		SObjectType sobjType = gd.get(typeName);
 		if (sobjType == null) {
-			throw new fflib_ApexMocks.ApexMocksException('SObject type not found: ' + typeName);
+			throw new fflib_ApexMocks.ApexMocksException(
+				'SObject type not found: ' + typeName
+			);
 		}
 		return sobjType;
 	}
@@ -237,13 +286,18 @@ public class fflib_ApexMocksUtils
 	/**
 	 * Gets the SObjectField of an object by name
 	 */
-	private static Schema.SObjectField getField(String objectName, String fieldName) {
-
+	private static Schema.SObjectField getField(
+		String objectName,
+		String fieldName
+	) {
 		SObjectType sobjType = getType(objectName);
-		Map<String, Schema.SObjectField> objectFields = sobjType.getDescribe().fields.getMap();
+		Map<String, Schema.SObjectField> objectFields = sobjType.getDescribe()
+			.fields.getMap();
 		Schema.SObjectField sobjField = objectFields.get(fieldName);
 		if (sobjField == null) {
-			throw new fflib_ApexMocks.ApexMocksException('SObject field not found: ' + fieldName);
+			throw new fflib_ApexMocks.ApexMocksException(
+				'SObject field not found: ' + fieldName
+			);
 		}
 		return sobjField;
 	}

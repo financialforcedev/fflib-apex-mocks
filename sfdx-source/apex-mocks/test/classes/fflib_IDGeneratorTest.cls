@@ -24,11 +24,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 @isTest
-private class fflib_IDGeneratorTest
-{
+private class fflib_IDGeneratorTest {
 	@isTest
-	static void itShouldGenerateValidIDs()
-	{
+	static void itShouldGenerateValidIDs() {
 		String id1 = fflib_IDGenerator.generate(Account.SObjectType);
 		String id2 = fflib_IDGenerator.generate(Account.SObjectType);
 		String id3 = fflib_IDGenerator.generate(Account.SObjectType);

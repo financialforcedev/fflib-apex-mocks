@@ -24,17 +24,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 @isTest
-public with sharing class fflib_MethodArgValuesTest
-{
+public with sharing class fflib_MethodArgValuesTest {
 	@isTest
-	private static void equalsReturnsExpectedResults()
-	{
+	private static void equalsReturnsExpectedResults() {
 		//Given
-		fflib_MethodArgValues qm1 = new fflib_MethodArgValues(new List<Object>{ 'hello' });
-		fflib_MethodArgValues qm2 = new fflib_MethodArgValues(new List<Object>{ 'hello' });
-		fflib_MethodArgValues qm3 = new fflib_MethodArgValues(new List<Object>{ 'hi' });
-		fflib_MethodArgValues qm4 = new fflib_MethodArgValues(new List<Object>{ 'hello', 'hello', 'hello' });
-		fflib_MethodArgValues qm5 = new fflib_MethodArgValues(new List<Object>());
+		fflib_MethodArgValues qm1 = new fflib_MethodArgValues(
+			new List<Object>{ 'hello' }
+		);
+		fflib_MethodArgValues qm2 = new fflib_MethodArgValues(
+			new List<Object>{ 'hello' }
+		);
+		fflib_MethodArgValues qm3 = new fflib_MethodArgValues(
+			new List<Object>{ 'hi' }
+		);
+		fflib_MethodArgValues qm4 = new fflib_MethodArgValues(
+			new List<Object>{ 'hello', 'hello', 'hello' }
+		);
+		fflib_MethodArgValues qm5 = new fflib_MethodArgValues(
+			new List<Object>()
+		);
 		fflib_MethodArgValues qm6 = new fflib_MethodArgValues(null);
 
 		//When/thens
@@ -67,14 +75,23 @@ public with sharing class fflib_MethodArgValuesTest
 	}
 
 	@isTest
-	private static void hashCodeReturnsExpectedResults()
-	{
+	private static void hashCodeReturnsExpectedResults() {
 		//Given
-		fflib_MethodArgValues qm1 = new fflib_MethodArgValues(new List<Object>{ 'hello' });
-		fflib_MethodArgValues qm2 = new fflib_MethodArgValues(new List<Object>{ 'hello' });
-		fflib_MethodArgValues qm3 = new fflib_MethodArgValues(new List<Object>{ 'hi' });
-		fflib_MethodArgValues qm4 = new fflib_MethodArgValues(new List<Object>{ 'hello', 'hello', 'hello' });
-		fflib_MethodArgValues qm5 = new fflib_MethodArgValues(new List<Object>());
+		fflib_MethodArgValues qm1 = new fflib_MethodArgValues(
+			new List<Object>{ 'hello' }
+		);
+		fflib_MethodArgValues qm2 = new fflib_MethodArgValues(
+			new List<Object>{ 'hello' }
+		);
+		fflib_MethodArgValues qm3 = new fflib_MethodArgValues(
+			new List<Object>{ 'hi' }
+		);
+		fflib_MethodArgValues qm4 = new fflib_MethodArgValues(
+			new List<Object>{ 'hello', 'hello', 'hello' }
+		);
+		fflib_MethodArgValues qm5 = new fflib_MethodArgValues(
+			new List<Object>()
+		);
 		fflib_MethodArgValues qm6 = new fflib_MethodArgValues(null);
 
 		//When/thens

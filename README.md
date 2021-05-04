@@ -1,6 +1,7 @@
 # FFLib ApexMocks Framework
 
 ![Push Source and Run Apex Tests](https://github.com/apex-enterprise-patterns/fflib-apex-mocks/workflows/Create%20a%20Scratch%20Org,%20Push%20Source%20and%20Run%20Apex%20Tests/badge.svg)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ApexMocks is a mocking framework for the Salesforce Lightning Apex language. 
 
@@ -16,12 +17,15 @@ It derives its inspiration from the well known Java mocking framework [Mockito](
 ApexMocks allows you to write tests to both verify behavior and stub dependencies.
 
 An assumption is made that you are using some form of [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_injection) - for example passing dependencies via a constructor:
+
 ```Java
 public MyClass(ClassA.IClassA dependencyA, ClassB.IClassB dependencyB)
 ```
+
 This allows you to pass mock implementations of dependencies A and B when you want to unit test MyClass.
 
 Lets assume we've written our own list interface fflib_MyList.IList that we want to either verify or stub:
+
 ```Java
 public class fflib_MyList implements IList
 {
@@ -34,7 +38,9 @@ public class fflib_MyList implements IList
 	}
 }
 ```
+
 ### verify() behaviour verification
+
 ```Java
 // Given
 fflib_ApexMocks mocks = new fflib_ApexMocks();
@@ -51,7 +57,7 @@ mockList.add('bob');
 If the method wasn't called the expected number of times, or with the expected arguments, verify will throw an exception.
 The exception message contains details of the expected and actual invocations:
 
-```
+```Java
 EXPECTED COUNT: 1
 ACTUAL COUNT: 0
 METHOD: EmailService__sfdc_ApexStub.sendTo(String)
@@ -63,6 +69,7 @@ EXPECTED ARGS: [[contains "user-one"]]
 ```
 
 ### when() dependency stubbing
+
 ```Java
 fflib_ApexMocks mocks = new fflib_ApexMocks();
 fflib_MyList.IList mockList = (fflib_MyList.IList)mocks.mock(fflib_MyList.class);
@@ -89,36 +96,17 @@ System.assertEquals(mockFormulaResult, acc.Your_Formula_Field__c);
 ```
 
 ## Stub API
+
 ApexMocks now implements the [Stub API](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_stub_api.htm)!
 
 Previously, stub objects had to be generated using the ApexMocks generator at compile time.
 Now, stub objects can be generated dynamically at run time.
+
 ```Java
 fflib_ApexMocks mocks = new fflib_ApexMocks();
 fflib_MyList mockList = (fflib_MyList)mocks.mock(fflib_MyList.class);
 ```
-You can continue to use the ApexMocks generator, if you wish, but this is no longer a prerequisite to using ApexMocks.
 
-## Generating Mock files
-
-Run the apex mocks generator from the command line.
-```Bash
-java -jar apex-mocks-generator-4.0.0.jar
-	<Filepath to source files>
-	<Filepath to interface properties file>
-	<Name of generated mocks class>
-	<Filepath to target files - can be the same as filepath to source files>
-	<API version of generated mocks class - optional argument, 30.0 by default>
-
-# E.g. the command used to generate the current version of fflib_Mocks.
-java -jar apex-mocks-generator-4.0.0.jar "/Users/jbloggs/Dev/fflib-apex-mocks/src/classes" "/Users/jbloggs/Dev/fflib-apex-mocks/interfacemocks.properties" "fflib_Mocks" "/Users/jbloggs/Dev/fflib-apex-mocks/src/classes" "30.0"
-```
-
-Instantiate the generated classes as follows:
-```Java
-fflib_ApexMocks mocks = new fflib_ApexMocks();
-fflib_MyList.IList mockList = new MockMyList(mocks);
-```
 ## Documentation
 
 * [ApexMocks Framework Tutorial](http://code4cloud.wordpress.com/2014/05/06/apexmocks-framework-tutorial/)
@@ -135,3 +123,7 @@ fflib_MyList.IList mockList = new MockMyList(mocks);
 * [Answering](https://xonoxforce.wordpress.com/2017/03/31/answering-with-apex-mocks/)
 * [Counters](https://xonoxforce.wordpress.com/2017/04/01/counters-in-apex-mocks-verifications/)
 * [Troubleshooting](https://salesforce.stackexchange.com/questions/252460/my-apexmocks-arent-working-what-could-be-wrong)
+
+## Contributing
+
+If you are interested in contributing to this codebase, we encourage you to review our [Contributing](CONTRIBUTING.md) guide to learn more.

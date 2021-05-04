@@ -7,18 +7,23 @@
  *	It can be used in the classic verify and in the ordered verify.
  *	@group Core
  */
-public with sharing class fflib_VerificationMode
-{
-	public Integer VerifyMin {get; set;}
-	public Integer VerifyMax {get; set;}
+public with sharing class fflib_VerificationMode {
+	public Integer VerifyMin { get; set; }
+	public Integer VerifyMax { get; set; }
 	public String CustomAssertMessage { get; set; }
 
-	public enum ModeName {times, atLeast, atMost, between, atLeastOnce, calls}
+	public enum ModeName {
+		times,
+		atLeast,
+		atMost,
+		between,
+		atLeastOnce,
+		calls
+	}
 
 	public ModeName Method;
 
-	public fflib_VerificationMode()
-	{
+	public fflib_VerificationMode() {
 		VerifyMin = 1;
 		VerifyMax = null;
 		CustomAssertMessage = null;
@@ -26,8 +31,8 @@ public with sharing class fflib_VerificationMode
 	}
 
 	/**
-	* Sets how many times the method is expected to be called.
-	  * For InOrder verification we copy Mockito behavior which is as follows;
+	 * Sets how many times the method is expected to be called.
+	 * For InOrder verification we copy Mockito behavior which is as follows;
 	 * <ul>
 	 * <li>Consume the specified number of matching invocations, ignoring non-matching invocations in between</li>
 	 * <li>Fail an assert if the very next invocation matches, but additional matches can still exist so long as at least one non-matching invocation exists before them</li>
@@ -37,8 +42,7 @@ public with sharing class fflib_VerificationMode
 	 * @param times The number of times you expect the method to have been called.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode times(Integer times)
-	{
+	public fflib_VerificationMode times(Integer times) {
 		this.Method = ModeName.times;
 		this.VerifyMin = this.VerifyMax = times;
 		return this;
@@ -49,8 +53,7 @@ public with sharing class fflib_VerificationMode
 	 * @param customAssertMessage The custom message for the assert in case the assert is false. The custom message is queued to the default message.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode description(String customAssertMessage)
-	{
+	public fflib_VerificationMode description(String customAssertMessage) {
 		this.CustomAssertMessage = customAssertMessage;
 		return this;
 	}
@@ -61,8 +64,7 @@ public with sharing class fflib_VerificationMode
 	 * @param atLeastTimes The minimum number of times you expect the method to have been called.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode atLeast(Integer atLeastTimes)
-	{
+	public fflib_VerificationMode atLeast(Integer atLeastTimes) {
 		this.Method = ModeName.atLeast;
 		this.VerifyMin = atLeastTimes;
 
@@ -74,8 +76,7 @@ public with sharing class fflib_VerificationMode
 	 * @param atMostTimes The maximum number of times the method is expected to be called.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode atMost(Integer atMostTimes)
-	{
+	public fflib_VerificationMode atMost(Integer atMostTimes) {
 		this.Method = ModeName.atMost;
 		this.VerifyMax = atMostTimes;
 
@@ -87,8 +88,7 @@ public with sharing class fflib_VerificationMode
 	 * With the InOrder verification it performs a greedy verification, which means it would consume all the instances of the method verified.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode atLeastOnce()
-	{
+	public fflib_VerificationMode atLeastOnce() {
 		this.Method = ModeName.atLeastOnce;
 		this.VerifyMin = 1;
 
@@ -101,8 +101,10 @@ public with sharing class fflib_VerificationMode
 	 * @param atMostTimes The maximum number of times the method is expected to be called.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode between(Integer atLeastTimes, Integer atMostTimes)
-	{
+	public fflib_VerificationMode between(
+		Integer atLeastTimes,
+		Integer atMostTimes
+	) {
 		this.Method = ModeName.between;
 		this.VerifyMin = atLeastTimes;
 		this.VerifyMax = atMostTimes;
@@ -114,8 +116,7 @@ public with sharing class fflib_VerificationMode
 	 * Sets that the method is not expected to be called.
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode never()
-	{
+	public fflib_VerificationMode never() {
 		this.VerifyMin = fflib_ApexMocks.NEVER;
 		this.VerifyMax = fflib_ApexMocks.NEVER;
 
@@ -128,8 +129,7 @@ public with sharing class fflib_VerificationMode
 	 * @param callingTimes The number of times you expect the method to have been called in the InOrder verifying (no greedy verify).
 	 * @return The fflib_VerificationMode object instance with the proper settings.
 	 */
-	public fflib_VerificationMode calls(Integer callingTimes)
-	{
+	public fflib_VerificationMode calls(Integer callingTimes) {
 		this.Method = ModeName.calls;
 		this.VerifyMin = callingTimes;
 		this.VerifyMax = null;

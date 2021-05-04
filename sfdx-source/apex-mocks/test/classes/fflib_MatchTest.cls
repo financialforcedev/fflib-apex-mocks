@@ -24,1164 +24,1391 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 @isTest
-public with sharing class fflib_MatchTest
-{
+public with sharing class fflib_MatchTest {
 	@isTest
-	private static void whenMatchesAllArgsWithOneMatchReturnsTrue()
-	{
+	private static void whenMatchesAllArgsWithOneMatchReturnsTrue() {
 		//Given
-		fflib_MethodArgValues argValues = new fflib_MethodArgValues(new List<Object>{ null });
-		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{ new AlwaysMatch() };
-		
+		fflib_MethodArgValues argValues = new fflib_MethodArgValues(
+			new List<Object>{ null }
+		);
+		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
+			new AlwaysMatch()
+		};
+
 		//When
 		Boolean match = fflib_Match.matchesAllArgs(argValues, targetMatchers);
 
 		//Then
 		System.assert(match);
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithManyMatchesReturnsTrue()
-	{
+	private static void whenMatchesAllArgsWithManyMatchesReturnsTrue() {
 		//Given
-		fflib_MethodArgValues argValues = new fflib_MethodArgValues(new List<Object>{
-			null,
-			null,
-			null,
-			null
-		});
-		
+		fflib_MethodArgValues argValues = new fflib_MethodArgValues(
+			new List<Object>{ null, null, null, null }
+		);
+
 		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
 			new AlwaysMatch(),
 			new AlwaysMatch(),
 			new AlwaysMatch(),
 			new AlwaysMatch()
 		};
-		
+
 		//When
 		Boolean match = fflib_Match.matchesAllArgs(argValues, targetMatchers);
 
 		//Then
 		System.assert(match);
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithOneMismatchReturnsFalse()
-	{
+	private static void whenMatchesAllArgsWithOneMismatchReturnsFalse() {
 		//Given
-		fflib_MethodArgValues argValues = new fflib_MethodArgValues(new List<Object>{ null });
-		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{ new NeverMatch() };
-		
+		fflib_MethodArgValues argValues = new fflib_MethodArgValues(
+			new List<Object>{ null }
+		);
+		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
+			new NeverMatch()
+		};
+
 		//When
 		Boolean match = fflib_Match.matchesAllArgs(argValues, targetMatchers);
 
 		//Then
 		System.assert(!match);
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithManyMismatchesReturnsFalse()
-	{
+	private static void whenMatchesAllArgsWithManyMismatchesReturnsFalse() {
 		//Given
-		fflib_MethodArgValues argValues = new fflib_MethodArgValues(new List<Object>{
-			null,
-			null,
-			null,
-			null
-		});
-		
+		fflib_MethodArgValues argValues = new fflib_MethodArgValues(
+			new List<Object>{ null, null, null, null }
+		);
+
 		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
 			new NeverMatch(),
 			new NeverMatch(),
 			new NeverMatch(),
 			new NeverMatch()
 		};
-		
+
 		//When
 		Boolean match = fflib_Match.matchesAllArgs(argValues, targetMatchers);
 
 		//Then
 		System.assert(!match);
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithMatchesAndMismatchesReturnsFalse()
-	{
+	private static void whenMatchesAllArgsWithMatchesAndMismatchesReturnsFalse() {
 		//Given
-		fflib_MethodArgValues argValues = new fflib_MethodArgValues(new List<Object>{
-			null,
-			null,
-			null,
-			null
-		});
-		
+		fflib_MethodArgValues argValues = new fflib_MethodArgValues(
+			new List<Object>{ null, null, null, null }
+		);
+
 		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
 			new AlwaysMatch(),
 			new AlwaysMatch(),
 			new NeverMatch(),
 			new AlwaysMatch()
 		};
-		
+
 		//When
 		Boolean match = fflib_Match.matchesAllArgs(argValues, targetMatchers);
 
 		//Then
 		System.assert(!match);
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithNullMethodArgsThrowsException()
-	{
+	private static void whenMatchesAllArgsWithNullMethodArgsThrowsException() {
 		//Given
 		fflib_MethodArgValues methodArg = null;
-		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{ new AlwaysMatch() };
-		
+		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
+			new AlwaysMatch()
+		};
+
 		//When
-		try
-		{
+		try {
 			fflib_Match.matchesAllArgs(methodArg, targetMatchers);
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
 			System.assertEquals('MethodArgs cannot be null', e.getMessage());
 		}
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithNullMethodArgsArgValuesThrowsException()
-	{
+	private static void whenMatchesAllArgsWithNullMethodArgsArgValuesThrowsException() {
 		//Given
 		fflib_MethodArgValues methodArg = new fflib_MethodArgValues(null);
-		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{ new AlwaysMatch() };
-		
+		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
+			new AlwaysMatch()
+		};
+
 		//When
-		try
-		{
+		try {
 			fflib_Match.matchesAllArgs(methodArg, targetMatchers);
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
-			System.assertEquals('MethodArgs.argValues cannot be null', e.getMessage());
+			System.assertEquals(
+				'MethodArgs.argValues cannot be null',
+				e.getMessage()
+			);
 		}
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithNullMatchersThrowsException()
-	{
+	private static void whenMatchesAllArgsWithNullMatchersThrowsException() {
 		//Given
-		fflib_MethodArgValues methodArg = new fflib_MethodArgValues(new List<Object>{ 'Test' });
+		fflib_MethodArgValues methodArg = new fflib_MethodArgValues(
+			new List<Object>{ 'Test' }
+		);
 		List<fflib_IMatcher> targetMatchers = null;
-		
+
 		//When
-		try
-		{
+		try {
 			fflib_Match.matchesAllArgs(methodArg, targetMatchers);
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
 			System.assertEquals('Matchers cannot be null', e.getMessage());
 		}
 	}
-	
+
 	@isTest
-	private static void whenMatchesAllArgsWithDifferentSizeArgValuesAndMatchersThrowsException()
-	{
+	private static void whenMatchesAllArgsWithDifferentSizeArgValuesAndMatchersThrowsException() {
 		//Given
-		fflib_MethodArgValues methodArg = new fflib_MethodArgValues(new List<Object>{ 'Test' });
-		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{ new AlwaysMatch(), new AlwaysMatch() };
-		
+		fflib_MethodArgValues methodArg = new fflib_MethodArgValues(
+			new List<Object>{ 'Test' }
+		);
+		List<fflib_IMatcher> targetMatchers = new List<fflib_IMatcher>{
+			new AlwaysMatch(),
+			new AlwaysMatch()
+		};
+
 		//When
-		try
-		{
+		try {
 			fflib_Match.matchesAllArgs(methodArg, targetMatchers);
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
-			String expectedMessage = 'MethodArgs and matchers must have the same count'
-				+ ', MethodArgs: (' + methodArg.argValues.size() + ') ' + methodArg.argValues
-				+ ', Matchers: (' + targetMatchers.size() + ') ' + targetMatchers;
+			String expectedMessage =
+				'MethodArgs and matchers must have the same count' +
+				', MethodArgs: (' +
+				methodArg.argValues.size() +
+				') ' +
+				methodArg.argValues +
+				', Matchers: (' +
+				targetMatchers.size() +
+				') ' +
+				targetMatchers;
 
 			System.assertEquals(expectedMessage, e.getMessage());
 		}
 	}
-	
+
 	@isTest
-	private static void whenMatchesWithOneMatcherSetsMatchingToTrue()
-	{
+	private static void whenMatchesWithOneMatcherSetsMatchingToTrue() {
 		//Given
 		fflib_IMatcher matcher = new AlwaysMatch();
-		
+
 		//When
 		fflib_Match.matches(matcher);
-		
+
 		//Then
 		System.assert(fflib_Match.Matching);
 	}
-	
+
 	@isTest
-	private static void whenMatchesWithOneMatcherRegistersMatcher()
-	{
+	private static void whenMatchesWithOneMatcherRegistersMatcher() {
 		//Given
 		fflib_IMatcher matcher = new AlwaysMatch();
-		
+
 		//When
 		fflib_Match.matches(matcher);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
-		
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
+
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
 		System.assert(matcher === registeredMatchers[0]);
 	}
-	
+
 	@isTest
-	private static void whenMatchesWithOneMatcherReturnsNull()
-	{
+	private static void whenMatchesWithOneMatcherReturnsNull() {
 		//Given
 		fflib_IMatcher matcher = new AlwaysMatch();
-		
+
 		//When
 		Object retval = fflib_Match.matches(matcher);
-		
+
 		//Then
 		System.assertEquals(null, retval);
 	}
 
 	@isTest
-	private static void allOfWithNoArgsThrowsException()
-	{
+	private static void allOfWithNoArgsThrowsException() {
 		//Given/When
-		try
-		{
-			Object x = fflib_Match.allOf((List<Object>)null);
+		try {
+			Object x = fflib_Match.allOf((List<Object>) null);
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
-			System.assertEquals('Must register matchers to combine', e.getMessage());
+			System.assertEquals(
+				'Must register matchers to combine',
+				e.getMessage()
+			);
 		}
 	}
 
 	@isTest
-	private static void allOfWithEmptyArgsThrowsException()
-	{
+	private static void allOfWithEmptyArgsThrowsException() {
 		//Given/When
-		try
-		{
+		try {
 			Object x = fflib_Match.allOf(new List<Object>{});
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
-			System.assertEquals('Must register matchers to combine', e.getMessage());
+			System.assertEquals(
+				'Must register matchers to combine',
+				e.getMessage()
+			);
 		}
 	}
 
 	@isTest
-	private static void allOfWithoutRegisteringInnerMatchersThrowsException()
-	{
+	private static void allOfWithoutRegisteringInnerMatchersThrowsException() {
 		//Given/When
-		try
-		{
+		try {
 			//Should be using fflib_Match.allOf(new List<Object>{ fflib_Match.myMatcher('Hello') })
 			//to register the inner matcher.
 			Object x = fflib_Match.allOf(new List<Object>{ 'Hello' });
 			System.assert(false, 'Expected exception');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			//Then
-			String expectedMessage = 'Error reclaiming inner matchers for combined matcher. '
-				+ 'Wanted 1 matchers but only got ' + new List<fflib_IMatcher>();
+			String expectedMessage =
+				'Error reclaiming inner matchers for combined matcher. ' +
+				'Wanted 1 matchers but only got ' +
+				new List<fflib_IMatcher>();
 			System.assertEquals(expectedMessage, e.getMessage());
 		}
 	}
-	
+
 	@isTest
-	private static void allOfWith2ArgsRegistersCorrectMatcherType()
-	{
+	private static void allOfWith2ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.allOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'));
-		
+		Object x = fflib_Match.allOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void allOfWith3ArgsRegistersCorrectMatcherType()
-	{
+	private static void allOfWith3ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.allOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'), fflib_Match.eq('hello3'));
-		
+		Object x = fflib_Match.allOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2'),
+			fflib_Match.eq('hello3')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void allOfWith4ArgsRegistersCorrectMatcherType()
-	{
+	private static void allOfWith4ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.allOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'), fflib_Match.eq('hello3'), fflib_Match.eq('hello4'));
-		
+		Object x = fflib_Match.allOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2'),
+			fflib_Match.eq('hello3'),
+			fflib_Match.eq('hello4')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void allOfWithListArgsRegistersCorrectMatcherType()
-	{
+	private static void allOfWithListArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.allOf(new List<Object>{ fflib_Match.eq('hello') });
-		
+		Object x = fflib_Match.allOf(
+			new List<Object>{ fflib_Match.eq('hello') }
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void anyOfWith2ArgsRegistersCorrectMatcherType()
-	{
+	private static void anyOfWith2ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.anyOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'));
-		
+		Object x = fflib_Match.anyOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void anyOfWith3ArgsRegistersCorrectMatcherType()
-	{
+	private static void anyOfWith3ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.anyOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'), fflib_Match.eq('hello3'));
-		
+		Object x = fflib_Match.anyOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2'),
+			fflib_Match.eq('hello3')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void anyOfWith4ArgsRegistersCorrectMatcherType()
-	{
+	private static void anyOfWith4ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.anyOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'), fflib_Match.eq('hello3'), fflib_Match.eq('hello4'));
-		
+		Object x = fflib_Match.anyOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2'),
+			fflib_Match.eq('hello3'),
+			fflib_Match.eq('hello4')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void anyOfWithListArgsRegistersCorrectMatcherType()
-	{
+	private static void anyOfWithListArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.anyOf(new List<Object>{ fflib_Match.eq('hello') });
-		
+		Object x = fflib_Match.anyOf(
+			new List<Object>{ fflib_Match.eq('hello') }
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void isNotRegistersCorrectMatcherType()
-	{
+	private static void isNotRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.isNot(fflib_Match.eq('hello1'));
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void noneOfWith2ArgsRegistersCorrectMatcherType()
-	{
+	private static void noneOfWith2ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.noneOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'));
-		
+		Object x = fflib_Match.noneOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void noneOfWith3ArgsRegistersCorrectMatcherType()
-	{
+	private static void noneOfWith3ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.noneOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'), fflib_Match.eq('hello3'));
-		
+		Object x = fflib_Match.noneOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2'),
+			fflib_Match.eq('hello3')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void noneOfWith4ArgsRegistersCorrectMatcherType()
-	{
+	private static void noneOfWith4ArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.noneOf(fflib_Match.eq('hello1'), fflib_Match.eq('hello2'), fflib_Match.eq('hello3'), fflib_Match.eq('hello4'));
-		
+		Object x = fflib_Match.noneOf(
+			fflib_Match.eq('hello1'),
+			fflib_Match.eq('hello2'),
+			fflib_Match.eq('hello3'),
+			fflib_Match.eq('hello4')
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void noneOfWithListArgsRegistersCorrectMatcherType()
-	{
+	private static void noneOfWithListArgsRegistersCorrectMatcherType() {
 		//Given/When
-		Object x = fflib_Match.noneOf(new List<Object>{ fflib_Match.eq('hello') });
-		
+		Object x = fflib_Match.noneOf(
+			new List<Object>{ fflib_Match.eq('hello') }
+		);
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Combined
+		);
 	}
 
 	@isTest
-	private static void eqRegistersCorrectMatcherType()
-	{
+	private static void eqRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eq('hello');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqBooleanRegistersCorrectMatcherType()
-	{
+	public static void eqBooleanRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqBoolean(true);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqDateRegistersCorrectMatcherType()
-	{
+	public static void eqDateRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqDate(Date.today());
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqDatetimeRegistersCorrectMatcherType()
-	{
+	public static void eqDatetimeRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqDatetime(System.now());
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqDecimalRegistersCorrectMatcherType()
-	{
+	public static void eqDecimalRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqDecimal(123);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqDoubleRegistersCorrectMatcherType()
-	{
+	public static void eqDoubleRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqDouble(123);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqIdRegistersCorrectMatcherType()
-	{
+	public static void eqIdRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqId('001000000000001AAA');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqIntegerRegistersCorrectMatcherType()
-	{
+	public static void eqIntegerRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqInteger(123);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqListRegistersCorrectMatcherType()
-	{
+	public static void eqListRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqList(new List<String>{ 'hello' });
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqLongRegistersCorrectMatcherType()
-	{
+	public static void eqLongRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqLong(123);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqSObjectFieldRegistersCorrectMatcherType()
-	{
+	public static void eqSObjectFieldRegistersCorrectMatcherType() {
 		//Given/When
-		Schema.SObjectField f = Schema.getGlobalDescribe().get('Account').getDescribe().fields.getMap().get('Id');
+		Schema.SObjectField f = Schema.getGlobalDescribe()
+			.get('Account')
+			.getDescribe()
+			.fields.getMap()
+			.get('Id');
 		Object x = fflib_Match.eqSObjectField(f);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqSObjectTypeRegistersCorrectMatcherType()
-	{
+	public static void eqSObjectTypeRegistersCorrectMatcherType() {
 		//Given/When
 		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
 		Object x = fflib_Match.eqSObjectType(ot);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	public static void eqStringRegistersCorrectMatcherType()
-	{
+	public static void eqStringRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.eqString('hello');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.Eq
+		);
 	}
 
 	@isTest
-	private static void refEqRegistersCorrectMatcherType()
-	{
+	private static void refEqRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.refEq('hello');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.RefEq);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.RefEq
+		);
 	}
 
 	@isTest
-	private static void anyBooleanRegistersCorrectMatcherType()
-	{
+	private static void anyBooleanRegistersCorrectMatcherType() {
 		//Given/When
 		Boolean x = fflib_Match.anyBoolean();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyBoolean);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyBoolean
+		);
 	}
 
 	@isTest
-	private static void anyDateRegistersCorrectMatcherType()
-	{
+	private static void anyDateRegistersCorrectMatcherType() {
 		//Given/When
 		Date x = fflib_Match.anyDate();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDate);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDate
+		);
 	}
 
 	@isTest
-	private static void anyDatetimeRegistersCorrectMatcherType()
-	{
+	private static void anyDatetimeRegistersCorrectMatcherType() {
 		//Given/When
 		Datetime x = fflib_Match.anyDatetime();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDatetime);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDatetime
+		);
 	}
 
 	@isTest
-	private static void anyDecimalRegistersCorrectMatcherType()
-	{
+	private static void anyDecimalRegistersCorrectMatcherType() {
 		//Given/When
 		Decimal x = fflib_Match.anyDecimal();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDecimal);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDecimal
+		);
 	}
 
 	@isTest
-	private static void anyDoubleRegistersCorrectMatcherType()
-	{
+	private static void anyDoubleRegistersCorrectMatcherType() {
 		//Given/When
 		Double x = fflib_Match.anyDouble();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDouble);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyDouble
+		);
 	}
 
 	@isTest
-	private static void anyFieldSetRegistersCorrectMatcherType()
-	{
+	private static void anyFieldSetRegistersCorrectMatcherType() {
 		//Given/When
 		Schema.FieldSet x = fflib_Match.anyFieldSet();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyFieldSet);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyFieldSet
+		);
 	}
 
 	@isTest
-	private static void anyIdRegistersCorrectMatcherType()
-	{
+	private static void anyIdRegistersCorrectMatcherType() {
 		//Given/When
 		Id x = fflib_Match.anyId();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyId);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyId
+		);
 	}
 
 	@isTest
-	private static void anyIntegerRegistersCorrectMatcherType()
-	{
+	private static void anyIntegerRegistersCorrectMatcherType() {
 		//Given/When
 		Integer x = fflib_Match.anyInteger();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyInteger);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyInteger
+		);
 	}
 
 	@isTest
-	private static void anyListRegistersCorrectMatcherType()
-	{
+	private static void anyListRegistersCorrectMatcherType() {
 		//Given/When
 		List<Object> x = fflib_Match.anyList();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyList);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyList
+		);
 	}
 
 	@isTest
-	private static void anyLongRegistersCorrectMatcherType()
-	{
+	private static void anyLongRegistersCorrectMatcherType() {
 		//Given/When
 		Long x = fflib_Match.anyLong();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyLong);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyLong
+		);
 	}
 
 	@isTest
-	private static void anyObjectRegistersCorrectMatcherType()
-	{
+	private static void anyObjectRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.anyObject();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyObject);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyObject
+		);
 	}
 
 	@isTest
-	private static void anyStringRegistersCorrectMatcherType()
-	{
+	private static void anyStringRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.anyString();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyString);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnyString
+		);
 	}
 
 	@isTest
-	private static void anySObjectRegistersCorrectMatcherType()
-	{
+	private static void anySObjectRegistersCorrectMatcherType() {
 		//Given/When
 		SObject x = fflib_Match.anySObject();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnySObject);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnySObject
+		);
 	}
 
 	@isTest
-	private static void anySObjectFieldRegistersCorrectMatcherType()
-	{
+	private static void anySObjectFieldRegistersCorrectMatcherType() {
 		//Given/When
 		SObjectField x = fflib_Match.anySObjectField();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnySObjectField);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnySObjectField
+		);
 	}
 
 	@isTest
-	private static void anySObjectTypeRegistersCorrectMatcherType()
-	{
+	private static void anySObjectTypeRegistersCorrectMatcherType() {
 		//Given/When
 		SObjectType x = fflib_Match.anySObjectType();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnySObjectType);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.AnySObjectType
+		);
 	}
 
 	@isTest
-	private static void dateAfterRegistersCorrectMatcherType()
-	{
+	private static void dateAfterRegistersCorrectMatcherType() {
 		//Given/When
 		Date x = fflib_Match.dateAfter(Date.today());
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeAfter);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeAfter
+		);
 	}
 
 	@isTest
-	private static void dateBeforeRegistersCorrectMatcherType()
-	{
+	private static void dateBeforeRegistersCorrectMatcherType() {
 		//Given/When
 		Date x = fflib_Match.dateBefore(Date.today());
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBefore);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBefore
+		);
 	}
 
 	@isTest
-	private static void dateBetweenRegistersCorrectMatcherType()
-	{
+	private static void dateBetweenRegistersCorrectMatcherType() {
 		//Given/When
 		Date x = fflib_Match.dateBetween(Date.today(), Date.today());
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBetween);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBetween
+		);
 	}
 
 	@isTest
-	private static void datetimeAfterRegistersCorrectMatcherType()
-	{
+	private static void datetimeAfterRegistersCorrectMatcherType() {
 		//Given/When
 		Datetime x = fflib_Match.datetimeAfter(System.now());
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeAfter);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeAfter
+		);
 	}
 
 	@isTest
-	private static void datetimeBeforeRegistersCorrectMatcherType()
-	{
+	private static void datetimeBeforeRegistersCorrectMatcherType() {
 		//Given/When
 		Datetime x = fflib_Match.datetimeBefore(System.now());
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBefore);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBefore
+		);
 	}
 
 	@isTest
-	private static void datetimeBetweenRegistersCorrectMatcherType()
-	{
+	private static void datetimeBetweenRegistersCorrectMatcherType() {
 		//Given/When
 		Datetime x = fflib_Match.datetimeBetween(System.now(), System.now());
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBetween);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DatetimeBetween
+		);
 	}
 
 	@isTest
-	private static void decimalBetweenRegistersCorrectMatcherType()
-	{
+	private static void decimalBetweenRegistersCorrectMatcherType() {
 		//Given/When
 		Decimal x = fflib_Match.decimalBetween(0, 10);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween
+		);
 	}
 
 	@isTest
-	private static void decimalLessThanRegistersCorrectMatcherType()
-	{
+	private static void decimalLessThanRegistersCorrectMatcherType() {
 		//Given/When
 		Decimal x = fflib_Match.decimalLessThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan
+		);
 	}
 
 	@isTest
-	private static void decimalMoreThanRegistersCorrectMatcherType()
-	{
+	private static void decimalMoreThanRegistersCorrectMatcherType() {
 		//Given/When
 		Decimal x = fflib_Match.decimalMoreThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan
+		);
 	}
 
 	@isTest
-	private static void doubleBetweenRegistersCorrectMatcherType()
-	{
+	private static void doubleBetweenRegistersCorrectMatcherType() {
 		//Given/When
 		Double x = fflib_Match.doubleBetween(0, 10);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween
+		);
 	}
 
 	@isTest
-	private static void doubleLessThanRegistersCorrectMatcherType()
-	{
+	private static void doubleLessThanRegistersCorrectMatcherType() {
 		//Given/When
 		Double x = fflib_Match.doubleLessThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan
+		);
 	}
 
 	@isTest
-	private static void doubleMoreThanRegistersCorrectMatcherType()
-	{
+	private static void doubleMoreThanRegistersCorrectMatcherType() {
 		//Given/When
 		Double x = fflib_Match.doubleMoreThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan
+		);
 	}
 
 	@isTest
-	private static void fieldSetEquivalentWithNullFieldSetThrowsException()
-	{
-		try
-		{
+	private static void fieldSetEquivalentWithNullFieldSetThrowsException() {
+		try {
 			fflib_Match.fieldSetEquivalentTo(null);
 			System.assert(false, 'ExpectedException');
-		}
-		catch (fflib_ApexMocks.ApexMocksException e)
-		{
+		} catch (fflib_ApexMocks.ApexMocksException e) {
 			System.assertEquals('Arg cannot be null: null', e.getMessage());
 		}
 	}
 
 	@isTest
-	private static void fieldSetEquivalentToRegistersCorrectMatcherType()
-	{
+	private static void fieldSetEquivalentToRegistersCorrectMatcherType() {
 		Schema.FieldSet anyFieldSet = fflib_ApexMocksUtilsTest.findAnyFieldSet();
-		if (anyFieldSet == null)
-		{
+		if (anyFieldSet == null) {
 			return;
 		}
 
 		//Given/When
 		Schema.FieldSet x = fflib_Match.fieldSetEquivalentTo(anyFieldSet);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.FieldSetEquivalentTo);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.FieldSetEquivalentTo
+		);
 	}
 
 	@isTest
-	private static void integerBetweenRegistersCorrectMatcherType()
-	{
+	private static void integerBetweenRegistersCorrectMatcherType() {
 		//Given/When
 		Integer x = fflib_Match.integerBetween(0, 10);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween
+		);
 	}
 
 	@isTest
-	private static void integerLessThanRegistersCorrectMatcherType()
-	{
+	private static void integerLessThanRegistersCorrectMatcherType() {
 		//Given/When
 		Integer x = fflib_Match.integerLessThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan
+		);
 	}
 
 	@isTest
-	private static void integerMoreThanRegistersCorrectMatcherType()
-	{
+	private static void integerMoreThanRegistersCorrectMatcherType() {
 		//Given/When
 		Integer x = fflib_Match.integerMoreThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan
+		);
 	}
 
 	@isTest
-	private static void isNotNullRegistersCorrectMatcherType()
-	{
+	private static void isNotNullRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.isNotNull();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.IsNotNull);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.IsNotNull
+		);
 	}
 
 	@isTest
-	private static void isNullRegistersCorrectMatcherType()
-	{
+	private static void isNullRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.isNull();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.IsNull);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.IsNull
+		);
 	}
 
 	@isTest
-	private static void listContainsRegistersCorrectMatcherType()
-	{
+	private static void listContainsRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.listContains('fred');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.ListContains);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.ListContains
+		);
 	}
 
 	@isTest
-	private static void listIsEmptyRegistersCorrectMatcherType()
-	{
+	private static void listIsEmptyRegistersCorrectMatcherType() {
 		//Given/When
 		Object x = fflib_Match.listIsEmpty();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.ListIsEmpty);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.ListIsEmpty
+		);
 	}
 
 	@isTest
-	private static void longBetweenRegistersCorrectMatcherType()
-	{
+	private static void longBetweenRegistersCorrectMatcherType() {
 		//Given/When
 		Long x = fflib_Match.longBetween(0, 10);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalBetween
+		);
 	}
 
 	@isTest
-	private static void longLessThanRegistersCorrectMatcherType()
-	{
+	private static void longLessThanRegistersCorrectMatcherType() {
 		//Given/When
 		Long x = fflib_Match.longLessThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalLessThan
+		);
 	}
 
 	@isTest
-	private static void longMoreThanRegistersCorrectMatcherType()
-	{
+	private static void longMoreThanRegistersCorrectMatcherType() {
 		//Given/When
 		Long x = fflib_Match.longMoreThan(0);
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.DecimalMoreThan
+		);
 	}
 
 	@isTest
-	private static void sObjectOfTypeRegistersCorrectMatcherType()
-	{
+	private static void sObjectOfTypeRegistersCorrectMatcherType() {
 		//Given
 		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
-		if (ot == null)
-		{
+		if (ot == null) {
 			return;
 		}
 
@@ -1189,198 +1416,236 @@ public with sharing class fflib_MatchTest
 		SObject x = fflib_Match.sObjectOfType(ot);
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectOfType);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectOfType
+		);
 	}
 
 	@isTest
-	private static void sObjectWithRegistersCorrectMatcherType()
-	{
+	private static void sObjectWithRegistersCorrectMatcherType() {
 		//Given
 		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
-		if (ot == null)
-		{
+		if (ot == null) {
 			return;
 		}
 
 		Schema.SObjectField f = ot.getDescribe().fields.getMap().get('Id');
 
 		//When
-		SObject x = fflib_Match.sObjectWith(new Map<Schema.SObjectField, Object>{ f=>null });
+		SObject x = fflib_Match.sObjectWith(
+			new Map<Schema.SObjectField, Object>{ f => null }
+		);
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectWith);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectWith
+		);
 	}
 
-    @isTest
-	private static void sObjectsWithRegistersCorrectMatcherType()
-	{
-		//Given
-		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
-		if (ot == null)
-		{
-			return;
-		}
-
-		Schema.SObjectField f = ot.getDescribe().fields.getMap().get('Id');
-
-		//When
-		SObject[] x = fflib_Match.sObjectsWith(new list<Map<Schema.SObjectField, Object>>{ 
-            new map<Schema.SObjectField,Object> {f=>null}
-        	});
-
-		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
-		System.assertNotEquals(null, registeredMatchers);
-		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectsWith);
-	}
-
-    @isTest
-	private static void sObjectsWithMatchInOrderRegistersCorrectMatcherType()
-	{
-		//Given
-		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
-		if (ot == null)
-		{
-			return;
-		}
-
-		Schema.SObjectField f = ot.getDescribe().fields.getMap().get('Id');
-
-		//When
-		SObject[] x = fflib_Match.sObjectsWith(new list<Map<Schema.SObjectField, Object>>{ 
-            new map<Schema.SObjectField,Object> {f=>null}
-        	}, false);
-
-		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
-		System.assertNotEquals(null, registeredMatchers);
-		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectsWith,registeredMatchers);
-	}
-    
 	@isTest
-	private static void sObjectWithIdRegistersCorrectMatcherType()
-	{
+	private static void sObjectsWithRegistersCorrectMatcherType() {
+		//Given
+		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
+		if (ot == null) {
+			return;
+		}
+
+		Schema.SObjectField f = ot.getDescribe().fields.getMap().get('Id');
+
+		//When
+		SObject[] x = fflib_Match.sObjectsWith(
+			new List<Map<Schema.SObjectField, Object>>{
+				new Map<Schema.SObjectField, Object>{ f => null }
+			}
+		);
+
+		//Then
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
+		System.assertNotEquals(null, registeredMatchers);
+		System.assertEquals(1, registeredMatchers.size());
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectsWith
+		);
+	}
+
+	@isTest
+	private static void sObjectsWithMatchInOrderRegistersCorrectMatcherType() {
+		//Given
+		Schema.SObjectType ot = Schema.getGlobalDescribe().get('Account');
+		if (ot == null) {
+			return;
+		}
+
+		Schema.SObjectField f = ot.getDescribe().fields.getMap().get('Id');
+
+		//When
+		SObject[] x = fflib_Match.sObjectsWith(
+			new List<Map<Schema.SObjectField, Object>>{
+				new Map<Schema.SObjectField, Object>{ f => null }
+			},
+			false
+		);
+
+		//Then
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
+		System.assertNotEquals(null, registeredMatchers);
+		System.assertEquals(1, registeredMatchers.size());
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectsWith,
+			registeredMatchers
+		);
+	}
+
+	@isTest
+	private static void sObjectWithIdRegistersCorrectMatcherType() {
 		//Given/When
 		SObject x = fflib_Match.sObjectWithId('001000000000001AAA');
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectWithId);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectWithId
+		);
 	}
 
 	@isTest
-	private static void sObjectWithNameRegistersCorrectMatcherType()
-	{
+	private static void sObjectWithNameRegistersCorrectMatcherType() {
 		//Given/When
 		SObject x = fflib_Match.sObjectWithName('hello');
 
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectWithName);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.SObjectWithName
+		);
 	}
 
 	@isTest
-	private static void stringContainsRegistersCorrectMatcherType()
-	{
+	private static void stringContainsRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.stringContains('hello');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringContains);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringContains
+		);
 	}
 
 	@isTest
-	private static void stringEndsWithRegistersCorrectMatcherType()
-	{
+	private static void stringEndsWithRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.stringEndsWith('hello');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringEndsWith);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringEndsWith
+		);
 	}
 
 	@isTest
-	private static void stringIsBlankRegistersCorrectMatcherType()
-	{
+	private static void stringIsBlankRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.stringIsBlank();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringIsBlank);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringIsBlank
+		);
 	}
 
 	@isTest
-	private static void stringIsNotBlankRegistersCorrectMatcherType()
-	{
+	private static void stringIsNotBlankRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.stringIsNotBlank();
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringIsNotBlank);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringIsNotBlank
+		);
 	}
 
 	@isTest
-	private static void stringMatchesRegistersCorrectMatcherType()
-	{
+	private static void stringMatchesRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.stringMatches('[a-z]*');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringMatches);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringMatches
+		);
 	}
 
 	@isTest
-	private static void stringStartsWithRegistersCorrectMatcherType()
-	{
+	private static void stringStartsWithRegistersCorrectMatcherType() {
 		//Given/When
 		String x = fflib_Match.stringStartsWith('hello');
-		
+
 		//Then
-		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(1);
+		List<fflib_IMatcher> registeredMatchers = fflib_Match.getAndClearMatchers(
+			1
+		);
 		System.assertNotEquals(null, registeredMatchers);
 		System.assertEquals(1, registeredMatchers.size());
-		System.assert(registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringStartsWith);
+		System.assert(
+			registeredMatchers[0] instanceof fflib_MatcherDefinitions.StringStartsWith
+		);
 	}
 
-	private class AlwaysMatch implements fflib_IMatcher
-	{
-		public Boolean matches(Object arg)
-		{
+	private class AlwaysMatch implements fflib_IMatcher {
+		public Boolean matches(Object arg) {
 			return true;
 		}
 	}
-	
-	private class NeverMatch implements fflib_IMatcher
-	{
-		public Boolean matches(Object arg)
-		{
+
+	private class NeverMatch implements fflib_IMatcher {
+		public Boolean matches(Object arg) {
 			return false;
 		}
 	}

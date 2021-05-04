@@ -29,8 +29,7 @@
  * Class defining a method return value.
  */
 @isTest
-public with sharing class fflib_MethodReturnValue
-{
+public with sharing class fflib_MethodReturnValue {
 	private StandardAnswer basicAnswer = new StandardAnswer();
 
 	/**
@@ -44,8 +43,7 @@ public with sharing class fflib_MethodReturnValue
 	 * @param value The value to return from the stubbed method call.
 	 * @return The fflib_MethodReturnValue instance to allow you to chain the methods.
 	 */
-	public fflib_MethodReturnValue thenReturn(Object value)
-	{
+	public fflib_MethodReturnValue thenReturn(Object value) {
 		thenAnswer(this.basicAnswer.setValue(value));
 		return this;
 	}
@@ -55,8 +53,7 @@ public with sharing class fflib_MethodReturnValue
 	 * @param e The exception to throw from the stubbed method call.
 	 * @return The fflib_MethodReturnValue instance to allow you to chain the methods.
 	 */
-	public fflib_MethodReturnValue thenThrow(Exception e)
-	{
+	public fflib_MethodReturnValue thenThrow(Exception e) {
 		thenAnswer(this.basicAnswer.setValue(e));
 		return this;
 	}
@@ -65,8 +62,7 @@ public with sharing class fflib_MethodReturnValue
 	 * Setup a stubbed answer.
 	 * @param answer The answer to run from the stubbed method call.
 	 */
-	public void thenAnswer(fflib_Answer answer)
-	{
+	public void thenAnswer(fflib_Answer answer) {
 		this.Answer = answer;
 	}
 
@@ -75,8 +71,7 @@ public with sharing class fflib_MethodReturnValue
 	 * @param values The values to return from the stubbed method call in consecutive calls.
 	 * @return The fflib_MethodReturnValue instance to allow you to chain the methods.
 	 */
-	public fflib_MethodReturnValue thenReturnMulti(List<Object> values)
-	{
+	public fflib_MethodReturnValue thenReturnMulti(List<Object> values) {
 		thenAnswer(this.basicAnswer.setValues(values));
 		return this;
 	}
@@ -86,8 +81,7 @@ public with sharing class fflib_MethodReturnValue
 	 * @param es The exceptions to throw from the stubbed method call in consecutive calls.
 	 * @return The fflib_MethodReturnValue instance to allow you to chain the methods.
 	 */
-	public fflib_MethodReturnValue thenThrowMulti(List<Exception> es)
-	{
+	public fflib_MethodReturnValue thenThrowMulti(List<Exception> es) {
 		thenAnswer(this.basicAnswer.setValues(es));
 		return this;
 	}
@@ -97,8 +91,7 @@ public with sharing class fflib_MethodReturnValue
 	 * Inner class to handle all the stubs that do not use the thenAnswer method directly.
 	 * For internal use only.
 	 */
-	public class StandardAnswer implements fflib_Answer
-	{
+	public class StandardAnswer implements fflib_Answer {
 		private Integer whichStubReturnIndex = 0;
 		/*
 		 * It stores the return values for the method stubbed.
@@ -111,8 +104,7 @@ public with sharing class fflib_MethodReturnValue
 		 * @param value The value to be set as return value for the StandardAnswer object.
 		 * @return The StandardAnswer instance.
 		 */
-		public StandardAnswer setValue(Object value)
-		{
+		public StandardAnswer setValue(Object value) {
 			ReturnValues.add(value);
 			return this;
 		}
@@ -122,12 +114,11 @@ public with sharing class fflib_MethodReturnValue
 		 * @param value The value to be set as return value for the StandardAnswer object.
 		 * @return the StandardAnswer instance.
 		 */
-		public StandardAnswer setValues(List<Object> values)
-		{
-			if(values == null || values.size() == 0)
-			{
+		public StandardAnswer setValues(List<Object> values) {
+			if (values == null || values.size() == 0) {
 				throw new fflib_ApexMocks.ApexMocksException(
-  					'The stubbing is not correct, no return values have been set.');
+					'The stubbing is not correct, no return values have been set.'
+				);
 			}
 
 			ReturnValues.addAll(values);
@@ -139,22 +130,18 @@ public with sharing class fflib_MethodReturnValue
 		 * @param invocation The invocation to answer for.
 		 * @return The ReturnValue for the method stubbed.
 		 */
-		public Object answer(fflib_InvocationOnMock invocation)
-		{
-			if(ReturnValues == null || ReturnValues.size() == 0)
-			{
+		public Object answer(fflib_InvocationOnMock invocation) {
+			if (ReturnValues == null || ReturnValues.size() == 0) {
 				throw new fflib_ApexMocks.ApexMocksException(
-  					'The stubbing is not correct, no return values have been set.');
+					'The stubbing is not correct, no return values have been set.'
+				);
 			}
 
-			Integer returnValuesSize = ReturnValues.size()-1;
+			Integer returnValuesSize = ReturnValues.size() - 1;
 
-			if(whichStubReturnIndex < returnValuesSize)
-			{
+			if (whichStubReturnIndex < returnValuesSize) {
 				return ReturnValues[whichStubReturnIndex++];
-			}
-			else
-			{
+			} else {
 				return ReturnValues[returnValuesSize];
 			}
 		}

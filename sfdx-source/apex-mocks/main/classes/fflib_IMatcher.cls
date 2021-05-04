@@ -23,8 +23,7 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface fflib_IMatcher
-{
+public interface fflib_IMatcher {
 	/**
 	 * Whether or not the supplied argument is a match.
 	 * Any supplementary information (e.g. boundary conditions, objects to match to etc)
